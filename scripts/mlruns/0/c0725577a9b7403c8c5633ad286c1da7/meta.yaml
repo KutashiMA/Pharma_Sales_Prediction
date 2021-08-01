@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Alt/workspace/Python/10academy/Week-3/Pharma_Sales_Prediction/scripts/mlruns/0/c0725577a9b7403c8c5633ad286c1da7/artifacts
+end_time: 1627841769287
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: c0725577a9b7403c8c5633ad286c1da7
+run_uuid: c0725577a9b7403c8c5633ad286c1da7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1627841767902
+status: 3
+tags: []
+user_id: Alt
