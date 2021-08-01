@@ -11,7 +11,6 @@ from sklearn.model_selection import train_test_split
 from urllib.parse import urlparse
 import mlflow
 import mlflow.sklearn
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 
 import logging
@@ -21,8 +20,8 @@ logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 path ='data/cleaned_data.csv'
-repo="C:/Users/Alt/workspace/Python/10academy/Week-2/abtest-mlops"
-version="v5"
+repo="C:/Users/Alt/workspace/Python/10academy/Week-3/Pharma_Sales_Prediction"
+version="v1"
 
 
 data_url= dvc.api.get_url(
@@ -41,15 +40,15 @@ def eval_metrics(actual, pred):
 def model_select(model):
     if model == 'RandomForestRegressor':
         from sklearn.ensemble import RandomForestRegressor
-        mod = LogisticRegression()
+        mod = RandomForestRegressor()
 
     elif model == 'DecisionTreeRegressor':
         from sklearn.tree import DecisionTreeRegressor
         mod = DecisionTreeRegressor()
         
-    elif model == 'XGBRegressor':
+    elif model == 'GradientBoostingRegressor':
         from sklearn.ensemble import GradientBoostingRegressor
-        mod = XGBRegressor()
+        mod = GradientBoostingRegressor()
         
     return mod, model
 
@@ -70,11 +69,10 @@ if __name__ == "__main__":
         )
     
     # necessary data 
-    train_X=data[['Store', 'DayOfWeek', 'Customers','Promo', 'year', 'month']]
-    train_Y=data['Sales']
+    train_X=data[['Store', 'DayOfWeek', 'Customers','Promo', 'year', 'month']][:100000]
+    train_Y=data['Sales'][:100000]
     lb = LabelEncoder()
-    data['month'] = lb.fit_transform(data['month'])
-    data['experiment'] = lb.fit_transform(data['experiment'])
+    train_X['month'] = lb.fit_transform(train_X['month'])
     # Split the data into training test sets..
     train_x, test_x, train_y, test_y = train_test_split(train_X, train_Y,test_size=0.2,random_state=0)
 
@@ -85,7 +83,7 @@ if __name__ == "__main__":
     cols_x.to_csv('../data/features.csv', header=False, index=False)
     #mlflow.log_artifact('feature.csv')
     
-    cols_y=pd.DataFrame(list(data[['answer']].columns))
+    cols_y=pd.DataFrame(list(data[['Sales']].columns))
     cols_y.to_csv('../data/target.csv', header=False, index=False)
     #mlflow.log_artifact('target.csv')
     
@@ -96,14 +94,14 @@ if __name__ == "__main__":
 
     mlflow.end_run()
     with mlflow.start_run():
-        model = model_select('XGBRegressor')
+        model = model_select('GradientBoostingRegressor')
         name = model[1]
         model=model[0]
-        model.fit(train_X, train_Y)
+        model.fit(train_x, train_y)
 
-        predicted_answer = model.predict(test_X)
+        predicted_answer = model.predict(test_x)
 
-        rmse= eval_metrics(test_Y, predicted_answer)
+        rmse= eval_metrics(test_y, predicted_answer)
 
         print(f"model is :{name}")
         print(f"RMSE: {rmse}")
