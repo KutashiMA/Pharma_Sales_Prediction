@@ -77,7 +77,7 @@ def main():
     features.append([df.iloc[0,2]])
     features.append([df.iloc[0,3]])
 
-    scaler_name = "../models/StandardScaler.pkl"
+    scaler_name = "./models/StandardScaler.pkl"
     scaler = pickle.load(open(scaler_name, 'rb'))
 
     scaled_features = scaler.fit_transform(features).reshape(-1, 6)
