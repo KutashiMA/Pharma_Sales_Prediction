@@ -82,7 +82,7 @@ def main():
 
     scaled_features = scaler.fit_transform(features).reshape(-1, 6)
 
-    model_name = "../models/DecisionTreeRegressor.pkl"
+    model_name = "./models/DecisionTreeRegressor.pkl"
     model = pickle.load(open(model_name, 'rb'))
 
     prediction = model.predict(scaled_features)
